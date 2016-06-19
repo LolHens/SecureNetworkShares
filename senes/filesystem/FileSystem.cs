@@ -105,12 +105,23 @@ namespace senes.filesystem
 
         public abstract NtStatus DeleteDirectory(string fileName, DokanFileInfo info);
 
-        public abstract NtStatus FlushFileBuffers(string fileName, DokanFileInfo info);
+        public virtual NtStatus FlushFileBuffers(string fileName, DokanFileInfo info)
+        {
+            try
+            {
+                ((FileStream))
+                return DokanResult.Success;
+            }
+            catch (IOException)
+            {
+                return DokanResult.DiskFull;
+            }
+        }
 
         public abstract void CloseFile(string fileName, DokanFileInfo info);
 
 
-        public NtStatus FindStreams(string fileName, out IList<FileInformation> streams, DokanFileInfo info)
+        public virtual NtStatus FindStreams(string fileName, out IList<FileInformation> streams, DokanFileInfo info)
         {
             streams = new List<FileInformation>();
             return DokanResult.NotImplemented;

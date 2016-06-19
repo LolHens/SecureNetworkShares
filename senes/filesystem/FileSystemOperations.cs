@@ -22,18 +22,23 @@ namespace senes.filesystem
         public NtStatus CreateFile(string fileName, FileAccess access, FileShare share, FileMode mode,
             FileOptions options, FileAttributes attributes, DokanFileInfo info)
         {
+            NtStatus result;
+
             if (info.IsDirectory)
             {
                 switch (mode)
                 {
                     case FileMode.Open:
-                        return _fileSystem.OpenDirectory(fileName, access, share, options, attributes, info);
+                        result = _fileSystem.OpenDirectory(fileName, access, share, options, attributes, info);
+                        break;
 
                     case FileMode.CreateNew:
-                        return _fileSystem.CreateDirectory(fileName, access, share, options, attributes, info);
+                        result = _fileSystem.CreateDirectory(fileName, access, share, options, attributes, info);
+                        break;
 
                     default:
-                        return DokanResult.NotImplemented;
+                        result = DokanResult.NotImplemented;
+                        break;
                 }
             }
             else
@@ -41,27 +46,39 @@ namespace senes.filesystem
                 switch (mode)
                 {
                     case FileMode.Append:
-                        return _fileSystem.OpenFile(fileName, access, share, true, true, options, attributes, info);
+                        result = _fileSystem.OpenFile(fileName, access, share, true, true, options, attributes, info);
+                        break;
 
                     case FileMode.Create:
-                        return _fileSystem.CreateFile(fileName, access, share, true, options, attributes, info);
+                        result = _fileSystem.CreateFile(fileName, access, share, true, options, attributes, info);
+                        break;
 
                     case FileMode.CreateNew:
-                        return _fileSystem.CreateFile(fileName, access, share, false, options, attributes, info);
+                        result = _fileSystem.CreateFile(fileName, access, share, false, options, attributes, info);
+                        break;
 
                     case FileMode.Open:
-                        return _fileSystem.OpenFile(fileName, access, share, false, false, options, attributes, info);
+                        result = _fileSystem.OpenFile(fileName, access, share, false, false, options, attributes, info);
+                        break;
 
                     case FileMode.OpenOrCreate:
-                        return _fileSystem.OpenFile(fileName, access, share, true, false, options, attributes, info);
+                        result = _fileSystem.OpenFile(fileName, access, share, true, false, options, attributes, info);
+                        break;
 
                     case FileMode.Truncate:
-                        return _fileSystem.TruncateFile(fileName, access, share, options, attributes, info);
+                        result = _fileSystem.TruncateFile(fileName, access, share, options, attributes, info);
+                        break;
 
                     default:
-                        return DokanResult.NotImplemented;
+                        result = DokanResult.NotImplemented;
+                        break;
                 }
             }
+
+            if (result == DokanResult.Success && info.Context == null)
+                info.Context = new object();
+
+            return result;
         }
 
         public void Cleanup(string fileName, DokanFileInfo info)
