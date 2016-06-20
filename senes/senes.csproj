@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="filesystem\File.cs" />
     <Compile Include="filesystem\FileSystemOperations.cs" />
     <Compile Include="filesystem\MountedFileSystem.cs" />
     <Compile Include="GUI.cs">
