@@ -7,7 +7,7 @@ using DokanNet;
 
 namespace senes.filesystem
 {
-    class MountedFileSystem<F> where F: File<F>, new()
+    class MountedFileSystem<F> where F : File<F>, new()
     {
         private readonly FileSystem<F> _fileSystem;
         private readonly string _mountPoint;
@@ -18,9 +18,9 @@ namespace senes.filesystem
             this._mountPoint = mountPoint;
         }
 
-        internal static MountedFileSystem<F> Mount(FileSystem<F> fileSystem, string mountPoint)
+        internal static MountedFileSystem<F> Mount(FileSystem<F> fileSystem, string mountPoint, DokanOptions mountOptions)
         {
-            fileSystem.Mount(mountPoint);
+            fileSystem.FileSystemOperations().Mount(mountPoint, mountOptions);
             return new MountedFileSystem<F>(fileSystem, mountPoint);
         }
 

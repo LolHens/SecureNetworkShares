@@ -7,7 +7,7 @@ using FileAccess = DokanNet.FileAccess;
 
 namespace senes.filesystem
 {
-    abstract class FileSystem<F> where F: File<F>, new()
+    abstract class FileSystem<F> where F : File<F>, new()
     {
         private readonly FileSystemOperations<F> _fileSystemOperations;
 
@@ -22,9 +22,9 @@ namespace senes.filesystem
             return _fileSystemOperations;
         }
 
-        public MountedFileSystem<F> Mount(string mountPoint)
+        public MountedFileSystem<F> Mount(string mountPoint, DokanOptions mountOptions)
         {
-            return MountedFileSystem<F>.Mount(this, mountPoint);
+            return MountedFileSystem<F>.Mount(this, mountPoint, mountOptions);
         }
 
 
@@ -117,80 +117,76 @@ namespace senes.filesystem
         public virtual NtStatus WriteFile(string fileName, byte[] buffer, out int bytesWritten, long offset,
             DokanFileInfo info)
         {
-            return ((F)info.Context).Write(fileName, buffer, out bytesWritten, offset, info);
+            return ((F) info.Context).Write(fileName, buffer, out bytesWritten, offset, info);
         }
 
 
         public virtual NtStatus GetFileInformation(string fileName, out FileInformation fileInfo, DokanFileInfo info)
         {
-            return ((F)info.Context).GetFileInformation(fileName, out fileInfo, info);
+            return ((F) info.Context).GetFileInformation(fileName, out fileInfo, info);
         }
 
         public virtual NtStatus SetFileAttributes(string fileName, FileAttributes attributes, DokanFileInfo info)
         {
-            return ((F)info.Context).SetAttributes(fileName, attributes, info);
+            return ((F) info.Context).SetAttributes(fileName, attributes, info);
         }
 
         public virtual NtStatus MoveFile(string oldName, string newName, bool replace, DokanFileInfo info)
         {
-            return ((F)info.Context).Move(oldName, newName, replace, info);
+            return ((F) info.Context).Move(oldName, newName, replace, info);
         }
 
         public virtual NtStatus SetEndOfFile(string fileName, long length, DokanFileInfo info)
         {
-            return ((F)info.Context).SetEndOfFile(fileName, length, info);
+            return ((F) info.Context).SetEndOfFile(fileName, length, info);
         }
 
         public virtual NtStatus SetAllocationSize(string fileName, long length, DokanFileInfo info)
         {
-            return ((F)info.Context).SetAllocationSize(fileName, length, info);
+            return ((F) info.Context).SetAllocationSize(fileName, length, info);
         }
 
         public virtual NtStatus GetFileSecurity(string fileName, out FileSystemSecurity security,
             AccessControlSections sections, DokanFileInfo info)
         {
-            return ((F)info.Context).GetSecurity(fileName, out security, sections, info);
+            return ((F) info.Context).GetSecurity(fileName, out security, sections, info);
         }
 
         public virtual NtStatus SetFileSecurity(string fileName, FileSystemSecurity security,
             AccessControlSections sections, DokanFileInfo info)
         {
-            return ((F)info.Context).SetSecurity(fileName, security, sections, info);
+            return ((F) info.Context).SetSecurity(fileName, security, sections, info);
         }
 
         public virtual NtStatus SetFileTime(string fileName, DateTime? creationTime, DateTime? lastAccessTime,
             DateTime? lastWriteTime, DokanFileInfo info)
         {
-            return ((F)info.Context).SetTime(fileName, creationTime, lastAccessTime, lastWriteTime, info);
+            return ((F) info.Context).SetTime(fileName, creationTime, lastAccessTime, lastWriteTime, info);
         }
 
         public virtual NtStatus DeleteFile(string fileName, DokanFileInfo info)
         {
-            return ((F)info.Context).Delete(fileName, info);
+            return ((F) info.Context).Delete(fileName, info);
         }
 
         public virtual NtStatus DeleteDirectory(string fileName, DokanFileInfo info)
         {
-            return ((F)info.Context).Delete(fileName, info);
+            return ((F) info.Context).Delete(fileName, info);
         }
 
         public virtual NtStatus FlushFileBuffers(string fileName, DokanFileInfo info)
         {
-            return ((F)info.Context).FlushBuffers(fileName, info);
+            return ((F) info.Context).FlushBuffers(fileName, info);
         }
 
         public virtual void CloseFile(string fileName, DokanFileInfo info)
         {
-            ((F)info.Context).Close(fileName, info);
+            ((F) info.Context).Close(fileName, info);
         }
 
 
-        public virtual NtStatus FindFiles(string fileName, string searchPattern, out IList<FileInformation> files,
-            DokanFileInfo info)
-        {
-            files = new List<FileInformation>();
-            return DokanResult.NotImplemented;
-        }
+        public abstract NtStatus FindFiles(string fileName, string searchPattern, out IList<FileInformation> files,
+            DokanFileInfo info);
 
         public virtual NtStatus FindStreams(string fileName, out IList<FileInformation> streams, DokanFileInfo info)
         {

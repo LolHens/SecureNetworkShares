@@ -10,7 +10,7 @@ using FileAccess = DokanNet.FileAccess;
 
 namespace senes.filesystem
 {
-    class FileSystemOperations<F> : IDokanOperations where F: File<F>, new()
+    class FileSystemOperations<F> : IDokanOperations where F : File<F>, new()
     {
         private readonly FileSystem<F> _fileSystem;
 

@@ -10,7 +10,7 @@ using FileAccess = DokanNet.FileAccess;
 
 namespace senes.filesystem
 {
-    abstract class File<F> where F: File<F>, new()
+    abstract class File<F> where F : File<F>, new()
     {
         internal FileSystem<F> fileSytem;
         internal bool directory;
@@ -58,7 +58,7 @@ namespace senes.filesystem
 
         public virtual NtStatus FlushBuffers(string fileName, DokanFileInfo info)
         {
-            return DokanResult.Success;
+            return DokanResult.NotImplemented;
         }
 
         public abstract void Close(string fileName, DokanFileInfo info);
