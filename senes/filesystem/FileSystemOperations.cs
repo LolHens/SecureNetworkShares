@@ -95,12 +95,20 @@ namespace senes.filesystem
 
         public NtStatus ReadFile(string fileName, byte[] buffer, out int bytesRead, long offset, DokanFileInfo info)
         {
-            return _fileSystem.ReadFile(fileName, buffer, out bytesRead, offset, info);
+            var result = _fileSystem.ReadFile(fileName, buffer, offset, info);
+
+            bytesRead = result.Item2;
+
+            return result.Item1;
         }
 
         public NtStatus WriteFile(string fileName, byte[] buffer, out int bytesWritten, long offset, DokanFileInfo info)
         {
-            return _fileSystem.WriteFile(fileName, buffer, out bytesWritten, offset, info);
+            var result = _fileSystem.WriteFile(fileName, buffer, offset, info);
+
+            bytesWritten = result.Item2;
+
+            return result.Item1;
         }
 
         public NtStatus FlushFileBuffers(string fileName, DokanFileInfo info)
@@ -110,7 +118,11 @@ namespace senes.filesystem
 
         public NtStatus GetFileInformation(string fileName, out FileInformation fileInfo, DokanFileInfo info)
         {
-            return _fileSystem.GetFileInformation(fileName, out fileInfo, info);
+            var result = _fileSystem.GetFileInformation(fileName, info);
+
+            fileInfo = result.Item2;
+
+            return result.Item1;
         }
 
         public NtStatus FindFiles(string fileName, out IList<FileInformation> files, DokanFileInfo info)
@@ -122,7 +134,11 @@ namespace senes.filesystem
         public NtStatus FindFilesWithPattern(string fileName, string searchPattern, out IList<FileInformation> files,
             DokanFileInfo info)
         {
-            return _fileSystem.FindFiles(fileName, searchPattern, out files, info);
+            var result = _fileSystem.FindFiles(fileName, searchPattern, info);
+
+            files = result.Item2;
+
+            return result.Item1;
         }
 
         public NtStatus SetFileAttributes(string fileName, FileAttributes attributes, DokanFileInfo info)
@@ -176,22 +192,36 @@ namespace senes.filesystem
             out long totalNumberOfFreeBytes,
             DokanFileInfo info)
         {
-            return _fileSystem.GetDiskFreeSpace(out freeBytesAvailable, out totalNumberOfBytes,
-                out totalNumberOfFreeBytes,
-                info);
+            var result = _fileSystem.GetDiskFreeSpace(info);
+
+            freeBytesAvailable = result.Item2.FreeBytesAvailable;
+            totalNumberOfBytes = result.Item2.TotalNumberOfBytes;
+            totalNumberOfFreeBytes = result.Item2.TotalNumberOfFreeBytes;
+
+            return result.Item1;
         }
 
         public NtStatus GetVolumeInformation(out string volumeLabel, out FileSystemFeatures features,
             out string fileSystemName,
             DokanFileInfo info)
         {
-            return _fileSystem.GetVolumeInformation(out volumeLabel, out features, out fileSystemName, info);
+            var result = _fileSystem.GetVolumeInformation(info);
+
+            volumeLabel = result.Item2.VolumeLabel;
+            features = result.Item2.Features;
+            fileSystemName = result.Item2.FileSystemName;
+
+            return result.Item1;
         }
 
         public NtStatus GetFileSecurity(string fileName, out FileSystemSecurity security, AccessControlSections sections,
             DokanFileInfo info)
         {
-            return _fileSystem.GetFileSecurity(fileName, out security, sections, info);
+            var result = _fileSystem.GetFileSecurity(fileName, sections, info);
+
+            security = result.Item2;
+
+            return result.Item1;
         }
 
         public NtStatus SetFileSecurity(string fileName, FileSystemSecurity security, AccessControlSections sections,
@@ -212,7 +242,11 @@ namespace senes.filesystem
 
         public NtStatus FindStreams(string fileName, out IList<FileInformation> streams, DokanFileInfo info)
         {
-            return _fileSystem.FindStreams(fileName, out streams, info);
+            var result = _fileSystem.FindStreams(fileName, info);
+
+            streams = result.Item2;
+
+            return result.Item1;
         }
     }
 }

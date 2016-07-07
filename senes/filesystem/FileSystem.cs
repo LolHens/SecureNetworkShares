@@ -28,13 +28,9 @@ namespace senes.filesystem
         }
 
 
-        public abstract NtStatus GetVolumeInformation(out string volumeLabel, out FileSystemFeatures features,
-            out string fileSystemName,
-            DokanFileInfo info);
+        public abstract Tuple<NtStatus, VolumeInfo> GetVolumeInformation(DokanFileInfo info);
 
-        public abstract NtStatus GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes,
-            out long totalNumberOfFreeBytes,
-            DokanFileInfo info);
+        public abstract Tuple<NtStatus, DiskSpaceInfo> GetDiskFreeSpace(DokanFileInfo info);
 
         public virtual NtStatus Mounted(DokanFileInfo info)
         {
@@ -108,22 +104,22 @@ namespace senes.filesystem
         }
 
 
-        public virtual NtStatus ReadFile(string fileName, byte[] buffer, out int bytesRead, long offset,
+        public virtual Tuple<NtStatus, int> ReadFile(string fileName, byte[] buffer, long offset,
             DokanFileInfo info)
         {
-            return ((F) info.Context).Read(fileName, buffer, out bytesRead, offset, info);
+            return ((F) info.Context).Read(fileName, buffer, offset, info);
         }
 
-        public virtual NtStatus WriteFile(string fileName, byte[] buffer, out int bytesWritten, long offset,
+        public virtual Tuple<NtStatus, int> WriteFile(string fileName, byte[] buffer, long offset,
             DokanFileInfo info)
         {
-            return ((F) info.Context).Write(fileName, buffer, out bytesWritten, offset, info);
+            return ((F) info.Context).Write(fileName, buffer, offset, info);
         }
 
 
-        public virtual NtStatus GetFileInformation(string fileName, out FileInformation fileInfo, DokanFileInfo info)
+        public virtual Tuple<NtStatus, FileInformation> GetFileInformation(string fileName, DokanFileInfo info)
         {
-            return ((F) info.Context).GetFileInformation(fileName, out fileInfo, info);
+            return ((F) info.Context).GetFileInformation(fileName, info);
         }
 
         public virtual NtStatus SetFileAttributes(string fileName, FileAttributes attributes, DokanFileInfo info)
@@ -146,10 +142,9 @@ namespace senes.filesystem
             return ((F) info.Context).SetAllocationSize(fileName, length, info);
         }
 
-        public virtual NtStatus GetFileSecurity(string fileName, out FileSystemSecurity security,
-            AccessControlSections sections, DokanFileInfo info)
+        public virtual Tuple<NtStatus, FileSystemSecurity> GetFileSecurity(string fileName, AccessControlSections sections, DokanFileInfo info)
         {
-            return ((F) info.Context).GetSecurity(fileName, out security, sections, info);
+            return ((F) info.Context).GetSecurity(fileName, sections, info);
         }
 
         public virtual NtStatus SetFileSecurity(string fileName, FileSystemSecurity security,
@@ -185,13 +180,11 @@ namespace senes.filesystem
         }
 
 
-        public abstract NtStatus FindFiles(string fileName, string searchPattern, out IList<FileInformation> files,
-            DokanFileInfo info);
+        public abstract Tuple<NtStatus, IList<FileInformation>> FindFiles(string fileName, string searchPattern, DokanFileInfo info);
 
-        public virtual NtStatus FindStreams(string fileName, out IList<FileInformation> streams, DokanFileInfo info)
+        public virtual Tuple<NtStatus, IList<FileInformation>>  FindStreams(string fileName, DokanFileInfo info)
         {
-            streams = new List<FileInformation>();
-            return DokanResult.NotImplemented;
+            return new Tuple<NtStatus, IList<FileInformation>>(DokanResult.NotImplemented, new List<FileInformation>());
         }
     }
 }

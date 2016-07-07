@@ -27,13 +27,11 @@ namespace senes.filesystem
             return DokanResult.NotImplemented;
         }
 
-        public abstract NtStatus Read(string fileName, byte[] buffer, out int bytesRead, long offset,
-            DokanFileInfo info);
+        public abstract Tuple<NtStatus, int> Read(string fileName, byte[] buffer, long offset, DokanFileInfo info);
 
-        public abstract NtStatus Write(string fileName, byte[] buffer, out int bytesWritten, long offset,
-            DokanFileInfo info);
+        public abstract Tuple<NtStatus, int> Write(string fileName, byte[] buffer, long offset, DokanFileInfo info);
 
-        public abstract NtStatus GetFileInformation(string fileName, out FileInformation fileInfo, DokanFileInfo info);
+        public abstract Tuple<NtStatus, FileInformation> GetFileInformation(string fileName, DokanFileInfo info);
 
         public abstract NtStatus SetAttributes(string fileName, FileAttributes attributes, DokanFileInfo info);
 
@@ -43,9 +41,7 @@ namespace senes.filesystem
 
         public abstract NtStatus SetAllocationSize(string fileName, long length, DokanFileInfo info);
 
-        public abstract NtStatus GetSecurity(string fileName, out FileSystemSecurity security,
-            AccessControlSections sections,
-            DokanFileInfo info);
+        public abstract Tuple<NtStatus, FileSystemSecurity> GetSecurity(string fileName, AccessControlSections sections, DokanFileInfo info);
 
         public abstract NtStatus SetSecurity(string fileName, FileSystemSecurity security,
             AccessControlSections sections,
