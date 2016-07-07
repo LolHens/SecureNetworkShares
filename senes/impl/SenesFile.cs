@@ -9,7 +9,7 @@ using DokanNet;
 using senes.filesystem;
 using FileAccess = DokanNet.FileAccess;
 
-namespace senes
+namespace senes.impl
 {
     class SenesFile : File<SenesFile>
     {
@@ -27,30 +27,32 @@ namespace senes
             return DokanResult.Success;
         }
 
-        public override NtStatus Read(string fileName, byte[] buffer, out int bytesRead, long offset, DokanFileInfo info)
+        public override Tuple<NtStatus, int> Read(string fileName, byte[] buffer, long offset, DokanFileInfo info)
         {
-            bytesRead = 0;
-            return DokanResult.NotImplemented;
+            return new Tuple<NtStatus, int>(
+                DokanResult.NotImplemented,
+                0);
         }
 
-        public override NtStatus Write(string fileName, byte[] buffer, out int bytesWritten, long offset,
-            DokanFileInfo info)
+        public override Tuple<NtStatus, int> Write(string fileName, byte[] buffer, long offset, DokanFileInfo info)
         {
-            bytesWritten = 0;
-            return DokanResult.NotImplemented;
+            return new Tuple<NtStatus, int>(
+                DokanResult.NotImplemented,
+                0);
         }
 
-        public override NtStatus GetFileInformation(string fileName, out FileInformation fileInfo, DokanFileInfo info)
+        public override Tuple<NtStatus, FileInformation> GetFileInformation(string fileName, DokanFileInfo info)
         {
-            fileInfo = new FileInformation
-            {
-                FileName = "test",
-                Attributes = FileAttributes.Normal,
-                LastAccessTime = DateTime.Now,
-                LastWriteTime = DateTime.Now,
-                CreationTime = DateTime.Now
-            };
-            return DokanResult.Success;
+            return new Tuple<NtStatus, FileInformation>(
+                DokanResult.Success,
+                new FileInformation
+                {
+                    FileName = "test",
+                    Attributes = FileAttributes.Normal,
+                    LastAccessTime = DateTime.Now,
+                    LastWriteTime = DateTime.Now,
+                    CreationTime = DateTime.Now
+                });
         }
 
         public override NtStatus SetAttributes(string fileName, FileAttributes attributes, DokanFileInfo info)
@@ -73,12 +75,12 @@ namespace senes
             return DokanResult.NotImplemented;
         }
 
-        public override NtStatus GetSecurity(string fileName, out FileSystemSecurity security,
-            AccessControlSections sections,
+        public override Tuple<NtStatus, FileSystemSecurity> GetSecurity(string fileName, AccessControlSections sections,
             DokanFileInfo info)
         {
-            security = null;
-            return DokanResult.NotImplemented;
+            return new Tuple<NtStatus, FileSystemSecurity>(
+                DokanResult.NotImplemented,
+                null);
         }
 
         public override NtStatus SetSecurity(string fileName, FileSystemSecurity security,
@@ -96,7 +98,8 @@ namespace senes
 
         public override NtStatus Delete(string fileName, DokanFileInfo info)
         {
-            return DokanResult.NotImplemented;
+            Console.WriteLine("Not called?");
+            return DokanResult.FileNotFound;
         }
 
         public override void Close(string fileName, DokanFileInfo info)
